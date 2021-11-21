@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using UnitOfWorkExample.Domain.Abstractions;
+using UnitOfWorkExample.Domain.Entities;
 using UnitOfWorkExample.Dtos;
 
 namespace UnitOfWorkExample.Controllers
@@ -19,7 +20,7 @@ namespace UnitOfWorkExample.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetForecasts(CancellationToken cancellationToken)
         {
             var weatherForecasts = await _appUnitOfWork.WeatherForecasts.GetAsync(cancellationToken);
             
@@ -33,6 +34,22 @@ namespace UnitOfWorkExample.Controllers
             });
             
             return Ok(result);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PostWeatherForecast([FromBody] WeatherForecastCreateDto weatherForecastItemDto,
+            CancellationToken cancellationToken)
+        {
+            var weatherForecastEntity = new WeatherForecast
+            {
+                Date = weatherForecastItemDto.Date,
+                Summary = weatherForecastItemDto.Summary,
+                TemperatureC = weatherForecastItemDto.TemperatureC
+            };
+            
+            var id = await _appUnitOfWork.WeatherForecasts.AddAsync(weatherForecastEntity, cancellationToken);
+            await _appUnitOfWork.SaveChangesAsync(cancellationToken);
+            return Ok(id);
         }
     }
 }
