@@ -4,6 +4,8 @@ namespace UnitOfWorkExample.Dtos
 {
     public class WeatherForecastItemDto
     {
+        public int Id { get; set; }
+        
         public DateTime Date { get; set; }
 
         public int TemperatureC { get; set; }

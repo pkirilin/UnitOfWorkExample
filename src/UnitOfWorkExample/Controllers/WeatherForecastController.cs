@@ -25,6 +25,7 @@ namespace UnitOfWorkExample.Controllers
             
             var result = weatherForecasts.Select(wf => new WeatherForecastItemDto
             {
+                Id = wf.Id,
                 Date = wf.Date,
                 TemperatureC = wf.TemperatureC,
                 TemperatureF = wf.TemperatureF,

@@ -11,8 +11,8 @@ namespace UnitOfWorkExample.Infrastructure.EfCore.Extensions
         {
             services.AddDbContext<AppDbContext>((provider, builder) =>
             {
-                var configuration = provider.GetService<IConfiguration>();
-                var connectionString = configuration == null ? "" : configuration["ConnectionStrings:MySql"];
+                var configuration = provider.GetRequiredService<IConfiguration>();
+                var connectionString = configuration["ConnectionStrings:MySql"];
                 var serverVersion = new MySqlServerVersion(new Version(5, 7));
                 
                 builder.UseMySql(connectionString, serverVersion);

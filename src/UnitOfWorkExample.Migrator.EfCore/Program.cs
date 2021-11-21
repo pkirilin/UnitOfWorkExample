@@ -1,12 +1,41 @@
 ﻿using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace UnitOfWorkExample.Migrator.EfCore
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static int Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var serviceProvider = CreateServiceProvider();
+            var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
+            
+            try
+            {
+                RunMigrator(args);
+                return 0;
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error while applying migrations");
+                return -1;
+            }
+        }
+
+        private static IServiceProvider CreateServiceProvider()
+        {
+            return new ServiceCollection()
+                .AddLogging(builder => builder.AddConsole())
+                .BuildServiceProvider();
+        }
+
+        private static void RunMigrator(string[] args)
+        {
+            var dbContextFactory = new AppDbContextFactory();
+            using var context = dbContextFactory.CreateDbContext(args);
+            context.Database.Migrate();
         }
     }
 }

@@ -4,24 +4,25 @@ namespace UnitOfWorkExample.Domain.Entities
 {
     public class WeatherForecast
     {
-        private static readonly string[] Summaries = new[]
+        // ReSharper disable once UnusedMember.Local
+        private static readonly string[] Summaries =
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
         
-        public DateTime Date { get; }
+        public int Id { get; set; }
+        
+        public DateTime Date { get; set; }
 
-        public int TemperatureC { get; }
+        public int TemperatureC { get; set; }
 
         public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 
-        public string Summary { get; }
-
-        public WeatherForecast(DateTime date, int temperatureC, string summary)
+        public string Summary { get; set; }
+        
+        // ReSharper disable once EmptyConstructor
+        public WeatherForecast()
         {
-            Date = date;
-            TemperatureC = temperatureC;
-            Summary = summary;
         }
     }
 }
