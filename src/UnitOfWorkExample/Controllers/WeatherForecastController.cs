@@ -1,8 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using UnitOfWorkExample.Domain.Abstractions;
+using UnitOfWorkExample.Dtos;
 
 namespace UnitOfWorkExample.Controllers
 {
@@ -10,29 +11,27 @@ namespace UnitOfWorkExample.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
+        private readonly IAppUnitOfWork _appUnitOfWork;
 
-        private readonly ILogger<WeatherForecastController> _logger;
-
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(IAppUnitOfWork appUnitOfWork)
         {
-            _logger = logger;
+            _appUnitOfWork = appUnitOfWork;
         }
 
         [HttpGet]
-        public IEnumerable<WeatherForecast> Get()
+        public async Task<IActionResult> Get(CancellationToken cancellationToken)
         {
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            var weatherForecasts = await _appUnitOfWork.WeatherForecasts.GetAsync(cancellationToken);
+            
+            var result = weatherForecasts.Select(wf => new WeatherForecastItemDto
             {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            })
-            .ToArray();
+                Date = wf.Date,
+                TemperatureC = wf.TemperatureC,
+                TemperatureF = wf.TemperatureF,
+                Summary = wf.Summary
+            });
+            
+            return Ok(result);
         }
     }
 }

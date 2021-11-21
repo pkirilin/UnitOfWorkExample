@@ -1,14 +1,14 @@
 using System;
 
-namespace UnitOfWorkExample
+namespace UnitOfWorkExample.Dtos
 {
-    public class WeatherForecast
+    public class WeatherForecastItemDto
     {
         public DateTime Date { get; set; }
 
         public int TemperatureC { get; set; }
 
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+        public int TemperatureF { get; set; }
 
         public string Summary { get; set; }
     }
