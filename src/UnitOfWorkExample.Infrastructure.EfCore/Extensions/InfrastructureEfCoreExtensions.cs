@@ -2,6 +2,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using UnitOfWorkExample.Domain.Abstractions;
 
 namespace UnitOfWorkExample.Infrastructure.EfCore.Extensions
 {
@@ -17,6 +18,8 @@ namespace UnitOfWorkExample.Infrastructure.EfCore.Extensions
                 
                 builder.UseMySql(connectionString, serverVersion);
             });
+
+            services.AddScoped<IAppUnitOfWork, AppUnitOfWork>();
         }
     }
 }
