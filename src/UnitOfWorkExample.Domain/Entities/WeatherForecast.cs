@@ -1,27 +1,34 @@
 using System;
 using UnitOfWorkExample.Domain.Abstractions;
+using UnitOfWorkExample.Domain.ValueObjects;
 
 namespace UnitOfWorkExample.Domain.Entities
 {
     public class WeatherForecast : EntityBase<int>
     {
-        // ReSharper disable once UnusedMember.Local
-        private static readonly string[] Summaries =
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
+        public DateTime Date { get; }
 
-        public DateTime Date { get; set; }
-
-        public int TemperatureC { get; set; }
+        public int TemperatureC { get; }
 
         public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 
-        public string Summary { get; set; }
-        
-        // ReSharper disable once EmptyConstructor
-        public WeatherForecast()
+        public WeatherForecastSummary Summary { get; }
+
+        // ReSharper disable once UnusedMember.Local
+        private WeatherForecast() : base(default)
         {
+        }
+
+        // ReSharper disable once UnusedMember.Local
+        private WeatherForecast(int id) : base(id)
+        {
+        }
+
+        public WeatherForecast(DateTime date, int temperatureC, string summaryText) : this(default)
+        {
+            Date = date;
+            TemperatureC = temperatureC;
+            Summary = new WeatherForecastSummary(summaryText);
         }
     }
 }

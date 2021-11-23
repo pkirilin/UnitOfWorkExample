@@ -1,7 +1,12 @@
 namespace UnitOfWorkExample.Domain.Abstractions
 {
-    public class EntityBase<TId>
+    public abstract class EntityBase<TId>
     {
-        public TId Id { get; set; }
+        public TId Id { get; }
+
+        protected EntityBase(TId id)
+        {
+            Id = id;
+        }
     }
 }

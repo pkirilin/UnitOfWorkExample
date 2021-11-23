@@ -30,7 +30,7 @@ namespace UnitOfWorkExample.Controllers
                 Date = wf.Date,
                 TemperatureC = wf.TemperatureC,
                 TemperatureF = wf.TemperatureF,
-                Summary = wf.Summary
+                Summary = wf.Summary.Text
             });
             
             return Ok(result);
@@ -40,13 +40,10 @@ namespace UnitOfWorkExample.Controllers
         public async Task<IActionResult> PostWeatherForecast([FromBody] WeatherForecastCreateDto weatherForecastItemDto,
             CancellationToken cancellationToken)
         {
-            var weatherForecastEntity = new WeatherForecast
-            {
-                Date = weatherForecastItemDto.Date,
-                Summary = weatherForecastItemDto.Summary,
-                TemperatureC = weatherForecastItemDto.TemperatureC
-            };
-            
+            var weatherForecastEntity = new WeatherForecast(weatherForecastItemDto.Date,
+                weatherForecastItemDto.TemperatureC,
+                weatherForecastItemDto.Summary);
+
             var id = await _appUnitOfWork.WeatherForecasts.AddAsync(weatherForecastEntity, cancellationToken);
             await _appUnitOfWork.SaveChangesAsync(cancellationToken);
             return Ok(id);
