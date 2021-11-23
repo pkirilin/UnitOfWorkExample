@@ -44,9 +44,19 @@ namespace UnitOfWorkExample.Controllers
                 weatherForecastItemDto.TemperatureC,
                 weatherForecastItemDto.Summary);
 
-            var id = await _appUnitOfWork.WeatherForecasts.AddAsync(weatherForecastEntity, cancellationToken);
+            var newForecast = await _appUnitOfWork.WeatherForecasts.AddAsync(weatherForecastEntity, cancellationToken);
             await _appUnitOfWork.SaveChangesAsync(cancellationToken);
-            return Ok(id);
+
+            var result = new WeatherForecastItemDto
+            {
+                Id = newForecast.Id,
+                Date = newForecast.Date,
+                TemperatureC = newForecast.TemperatureC,
+                TemperatureF = newForecast.TemperatureF,
+                Summary = newForecast.Summary.Text
+            };
+            
+            return Ok(result);
         }
     }
 }
