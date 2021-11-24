@@ -22,7 +22,7 @@ namespace UnitOfWorkExample.Controllers
         [HttpGet]
         public async Task<IActionResult> GetForecasts(CancellationToken cancellationToken)
         {
-            var weatherForecasts = await _appUnitOfWork.WeatherForecasts.GetAsync(cancellationToken);
+            var weatherForecasts = await _appUnitOfWork.WeatherForecasts.GetForecastsAsync(cancellationToken);
             
             var result = weatherForecasts.Select(wf => new WeatherForecastItemDto
             {

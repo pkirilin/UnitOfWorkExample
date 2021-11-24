@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using UnitOfWorkExample.Domain.Abstractions;
 
@@ -13,11 +10,6 @@ namespace UnitOfWorkExample.Infrastructure.EfCore
         protected Repository(DbSet<TEntity> entities)
         {
             Entities = entities;
-        }
-        
-        public Task<List<TEntity>> GetAsync(CancellationToken cancellationToken)
-        {
-            return Entities.ToListAsync(cancellationToken);
         }
 
         public TEntity Add(TEntity entity)
