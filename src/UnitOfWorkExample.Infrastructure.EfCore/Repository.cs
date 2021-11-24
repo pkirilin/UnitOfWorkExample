@@ -20,9 +20,9 @@ namespace UnitOfWorkExample.Infrastructure.EfCore
             return Entities.ToListAsync(cancellationToken);
         }
 
-        public async Task<TEntity> AddAsync(TEntity entity, CancellationToken cancellationToken)
+        public TEntity Add(TEntity entity)
         {
-            var entry = await Entities.AddAsync(entity, cancellationToken);
+            var entry = Entities.Add(entity);
             return entry.Entity;
         }
     }

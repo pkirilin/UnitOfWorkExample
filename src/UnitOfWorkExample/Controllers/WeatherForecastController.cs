@@ -44,7 +44,7 @@ namespace UnitOfWorkExample.Controllers
                 weatherForecastItemDto.TemperatureC,
                 weatherForecastItemDto.Summary);
 
-            var newForecast = await _appUnitOfWork.WeatherForecasts.AddAsync(weatherForecastEntity, cancellationToken);
+            var newForecast = _appUnitOfWork.WeatherForecasts.Add(weatherForecastEntity);
             await _appUnitOfWork.SaveChangesAsync(cancellationToken);
 
             var result = new WeatherForecastItemDto

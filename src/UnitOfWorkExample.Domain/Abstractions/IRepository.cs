@@ -8,6 +8,6 @@ namespace UnitOfWorkExample.Domain.Abstractions
     {
         Task<List<TEntity>> GetAsync(CancellationToken cancellationToken);
 
-        Task<TEntity> AddAsync(TEntity entity, CancellationToken cancellationToken);
+        TEntity Add(TEntity entity);
     }
 }
