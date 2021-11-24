@@ -1,11 +1,13 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using UnitOfWorkExample.Domain.Entities;
 
 namespace UnitOfWorkExample.Infrastructure.EfCore
 {
+    [SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Global")]
     public class AppDbContext : DbContext
     {
-        public DbSet<WeatherForecast> WeatherForecasts { get; set; } = null!;
+        public DbSet<WeatherForecast> WeatherForecasts { get; set; } = default!;
 
         public AppDbContext(DbContextOptions options) : base(options)
         {

@@ -1,6 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using UnitOfWorkExample.Domain.Abstractions;
+using UnitOfWorkExample.Domain.Repositories;
 using UnitOfWorkExample.Infrastructure.EfCore.Repositories;
 
 namespace UnitOfWorkExample.Infrastructure.EfCore
@@ -12,9 +13,10 @@ namespace UnitOfWorkExample.Infrastructure.EfCore
         public AppUnitOfWork(AppDbContext context)
         {
             _context = context;
+            WeatherForecasts = new WeatherForecastsRepository(_context.WeatherForecasts);
         }
         
-        public IWeatherForecastsRepository WeatherForecasts => new WeatherForecastsRepository(_context.WeatherForecasts);
+        public IWeatherForecastsRepository WeatherForecasts { get; }
 
         public Task SaveChangesAsync(CancellationToken cancellationToken)
         {

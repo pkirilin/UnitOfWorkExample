@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using UnitOfWorkExample.Domain.Abstractions;
 using UnitOfWorkExample.Domain.Entities;
+using UnitOfWorkExample.Domain.Repositories;
 
 namespace UnitOfWorkExample.Infrastructure.EfCore.Repositories
 {
