@@ -6,16 +6,15 @@ namespace UnitOfWorkExample.Domain.Entities
 {
     public class WeatherForecast : EntityBase<int>
     {
-        public DateTime Date { get; }
+        public DateTime Date { get; private set; }
 
-        public int TemperatureC { get; }
+        public int TemperatureC { get; private set; }
 
         public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 
-        public WeatherForecastSummary Summary { get; }
-
-        // ReSharper disable once UnusedMember.Local
-        private WeatherForecast() : base(default)
+        public WeatherForecastSummary Summary { get; private set; }
+        
+        public WeatherForecast()
         {
         }
 
@@ -24,11 +23,22 @@ namespace UnitOfWorkExample.Domain.Entities
         {
         }
 
-        public WeatherForecast(DateTime date, int temperatureC, string summaryText) : this(default)
+        public WeatherForecast SetDate(DateTime date)
         {
             Date = date;
+            return this;
+        }
+        
+        public WeatherForecast SetCelciusTemperature(int temperatureC)
+        {
             TemperatureC = temperatureC;
+            return this;
+        }
+        
+        public WeatherForecast SetSummary(string summaryText)
+        {
             Summary = new WeatherForecastSummary(summaryText);
+            return this;
         }
     }
 }

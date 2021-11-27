@@ -4,6 +4,10 @@ namespace UnitOfWorkExample.Domain.Abstractions
     {
         public TId Id { get; }
 
+        protected EntityBase()
+        {
+        }
+
         protected EntityBase(TId id)
         {
             Id = id;

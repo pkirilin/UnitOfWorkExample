@@ -1,7 +1,9 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace UnitOfWorkExample.Dtos
 {
+    [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
     public class WeatherForecastItemDto
     {
         public int Id { get; set; }

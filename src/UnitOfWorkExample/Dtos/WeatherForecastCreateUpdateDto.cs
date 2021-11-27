@@ -1,8 +1,10 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace UnitOfWorkExample.Dtos
 {
-    public class WeatherForecastCreateDto
+    [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
+    public class WeatherForecastCreateUpdateDto
     {
         public DateTime Date { get; set; }
 

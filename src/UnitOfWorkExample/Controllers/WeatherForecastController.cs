@@ -23,40 +23,80 @@ namespace UnitOfWorkExample.Controllers
         public async Task<IActionResult> GetForecasts(CancellationToken cancellationToken)
         {
             var weatherForecasts = await _appUnitOfWork.WeatherForecasts.GetForecastsAsync(cancellationToken);
+            var result = weatherForecasts.Select(ToWeatherForecastItemDto);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetForecastById([FromQuery] int id, CancellationToken cancellationToken)
+        {
+            var forecast = await _appUnitOfWork.WeatherForecasts.GetByIdAsync(id, cancellationToken);
             
-            var result = weatherForecasts.Select(wf => new WeatherForecastItemDto
-            {
-                Id = wf.Id,
-                Date = wf.Date,
-                TemperatureC = wf.TemperatureC,
-                TemperatureF = wf.TemperatureF,
-                Summary = wf.Summary.Text
-            });
+            if (forecast == null)
+                return NotFound();
             
+            var result = ToWeatherForecastItemDto(forecast);
             return Ok(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostWeatherForecast([FromBody] WeatherForecastCreateDto weatherForecastItemDto,
+        public async Task<IActionResult> CreateForecast([FromBody] WeatherForecastCreateUpdateDto body,
             CancellationToken cancellationToken)
         {
-            var weatherForecastEntity = new WeatherForecast(weatherForecastItemDto.Date,
-                weatherForecastItemDto.TemperatureC,
-                weatherForecastItemDto.Summary);
+            var forecast = new WeatherForecast()
+                .SetDate(body.Date)
+                .SetCelciusTemperature(body.TemperatureC)
+                .SetSummary(body.Summary);
 
-            var newForecast = _appUnitOfWork.WeatherForecasts.Add(weatherForecastEntity);
+            var newForecast = _appUnitOfWork.WeatherForecasts.Add(forecast);
             await _appUnitOfWork.SaveChangesAsync(cancellationToken);
 
-            var result = new WeatherForecastItemDto
-            {
-                Id = newForecast.Id,
-                Date = newForecast.Date,
-                TemperatureC = newForecast.TemperatureC,
-                TemperatureF = newForecast.TemperatureF,
-                Summary = newForecast.Summary.Text
-            };
-            
+            var result = ToWeatherForecastItemDto(newForecast);
             return Ok(result);
+        }
+        
+        [HttpPut]
+        public async Task<IActionResult> UpdateForecast([FromRoute] int id,
+            [FromBody] WeatherForecastCreateUpdateDto body,
+            CancellationToken cancellationToken)
+        {
+            var forecast = await _appUnitOfWork.WeatherForecasts.GetByIdAsync(id, cancellationToken);
+            
+            if (forecast == null)
+                return NotFound();
+            
+            forecast.SetDate(body.Date)
+                .SetCelciusTemperature(body.TemperatureC)
+                .SetSummary(body.Summary);
+            
+            _appUnitOfWork.WeatherForecasts.Update(forecast);
+            await _appUnitOfWork.SaveChangesAsync(cancellationToken);
+            return Ok();
+        }
+        
+        [HttpDelete]
+        public async Task<IActionResult> DeleteForecast([FromRoute] int id, CancellationToken cancellationToken)
+        {
+            var forecast = await _appUnitOfWork.WeatherForecasts.GetByIdAsync(id, cancellationToken);
+
+            if (forecast == null)
+                return NotFound();
+
+            _appUnitOfWork.WeatherForecasts.Remove(forecast);
+            await _appUnitOfWork.SaveChangesAsync(cancellationToken);
+            return Ok();
+        }
+
+        private static WeatherForecastItemDto ToWeatherForecastItemDto(WeatherForecast forecast)
+        {
+            return new WeatherForecastItemDto
+            {
+                Id = forecast.Id,
+                Date = forecast.Date,
+                TemperatureC = forecast.TemperatureC,
+                TemperatureF = forecast.TemperatureF,
+                Summary = forecast.Summary.Text
+            };
         }
     }
 }
