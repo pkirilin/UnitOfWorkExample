@@ -27,14 +27,16 @@ namespace UnitOfWorkExample.Migrator.EfCore
         private static IServiceProvider CreateServiceProvider()
         {
             return new ServiceCollection()
-                .AddLogging(builder => builder.AddConsole())
+                .AddLogging(builder => builder
+                    .AddConsole()
+                    .AddConfiguration(MigratorConfiguration.Instance))
                 .BuildServiceProvider();
         }
 
         private static void RunMigrator(string[] args)
         {
-            var dbContextFactory = new AppDbContextFactory();
-            using var context = dbContextFactory.CreateDbContext(args);
+            var contextFactory = new AppDbContextFactory();
+            using var context = contextFactory.CreateDbContext(args);
             context.Database.Migrate();
         }
     }
