@@ -5,7 +5,7 @@ using UnitOfWorkExample.Domain.Abstractions;
 
 namespace UnitOfWorkExample.Infrastructure.EfCore
 {
-    public class Repository<TEntity, TId> : IRepository<TEntity, TId> where TEntity : EntityBase<TId>
+    internal class Repository<TEntity, TId> : IRepository<TEntity, TId> where TEntity : EntityBase<TId>
     {
         protected readonly DbSet<TEntity> Entities;
 

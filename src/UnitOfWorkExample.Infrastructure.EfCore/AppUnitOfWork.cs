@@ -6,7 +6,7 @@ using UnitOfWorkExample.Infrastructure.EfCore.Repositories;
 
 namespace UnitOfWorkExample.Infrastructure.EfCore
 {
-    public class AppUnitOfWork : IAppUnitOfWork
+    internal class AppUnitOfWork : IAppUnitOfWork
     {
         private readonly AppDbContext _context;
 

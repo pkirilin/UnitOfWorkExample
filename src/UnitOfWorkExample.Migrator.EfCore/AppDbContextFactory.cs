@@ -7,7 +7,7 @@ using UnitOfWorkExample.Infrastructure.EfCore;
 
 namespace UnitOfWorkExample.Migrator.EfCore
 {
-    public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
+    internal class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
     {
         public AppDbContext CreateDbContext(string[] args)
         {
