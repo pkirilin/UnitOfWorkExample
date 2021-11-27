@@ -27,8 +27,8 @@ namespace UnitOfWorkExample.Controllers
             return Ok(result);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetForecastById([FromQuery] int id, CancellationToken cancellationToken)
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetForecastById([FromRoute] int id, CancellationToken cancellationToken)
         {
             var forecast = await _appUnitOfWork.WeatherForecasts.GetByIdAsync(id, cancellationToken);
             
@@ -55,7 +55,7 @@ namespace UnitOfWorkExample.Controllers
             return Ok(result);
         }
         
-        [HttpPut]
+        [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateForecast([FromRoute] int id,
             [FromBody] WeatherForecastCreateUpdateDto body,
             CancellationToken cancellationToken)
@@ -74,7 +74,7 @@ namespace UnitOfWorkExample.Controllers
             return Ok();
         }
         
-        [HttpDelete]
+        [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteForecast([FromRoute] int id, CancellationToken cancellationToken)
         {
             var forecast = await _appUnitOfWork.WeatherForecasts.GetByIdAsync(id, cancellationToken);

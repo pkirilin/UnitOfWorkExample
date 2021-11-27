@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,7 @@ using UnitOfWorkExample.Domain.Abstractions;
 namespace UnitOfWorkExample.Infrastructure.EfCore
 {
     internal class Repository<TEntity, TId> : IRepository<TEntity, TId> where TEntity : EntityBase<TId>
+        where TId : IComparable<TId>
     {
         protected readonly DbSet<TEntity> Entities;
 
@@ -14,9 +16,9 @@ namespace UnitOfWorkExample.Infrastructure.EfCore
             Entities = entities;
         }
 
-        public Task<TEntity> GetByIdAsync(TId id, CancellationToken cancellationToken)
+        public async Task<TEntity> GetByIdAsync(TId id, CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            return await Entities.FirstOrDefaultAsync(e => e.Id.CompareTo(id) == 0, cancellationToken);
         }
 
         public TEntity Add(TEntity entity)
@@ -27,12 +29,12 @@ namespace UnitOfWorkExample.Infrastructure.EfCore
 
         public void Update(TEntity entity)
         {
-            throw new System.NotImplementedException();
+            Entities.Update(entity);
         }
 
         public void Remove(TEntity entity)
         {
-            throw new System.NotImplementedException();
+            Entities.Remove(entity);
         }
     }
 }

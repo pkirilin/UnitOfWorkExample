@@ -1,9 +1,10 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace UnitOfWorkExample.Domain.Abstractions
 {
-    public interface IRepository<TEntity, in TId> where TEntity : EntityBase<TId>
+    public interface IRepository<TEntity, in TId> where TEntity : EntityBase<TId> where TId : IComparable<TId>
     {
         Task<TEntity> GetByIdAsync(TId id, CancellationToken cancellationToken);
         
