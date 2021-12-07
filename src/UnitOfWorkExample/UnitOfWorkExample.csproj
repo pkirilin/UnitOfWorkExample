@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\UnitOfWorkExample.Domain\UnitOfWorkExample.Domain.csproj" />
+    <ProjectReference Include="..\UnitOfWorkExample.Infrastructure.Dapper\UnitOfWorkExample.Infrastructure.Dapper.csproj" />
     <ProjectReference Include="..\UnitOfWorkExample.Infrastructure.EfCore\UnitOfWorkExample.Infrastructure.EfCore.csproj" />
   </ItemGroup>
 

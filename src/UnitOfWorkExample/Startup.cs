@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using UnitOfWorkExample.Infrastructure.EfCore.Extensions;
+using UnitOfWorkExample.Infrastructure.Dapper.Extensions;
 
 namespace UnitOfWorkExample
 {
@@ -26,7 +26,8 @@ namespace UnitOfWorkExample
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "UnitOfWorkExample", Version = "v1" });
             });
 
-            services.AddInfrastructureEfCore();
+            // services.AddInfrastructureEfCore();
+            services.AddInfrastructureDapper();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
