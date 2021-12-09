@@ -28,7 +28,7 @@ namespace UnitOfWorkExample.Infrastructure.Dapper
         {
             cancellationToken.ThrowIfCancellationRequested();
             var contrib = await Connection.GetAsync<TContrib>(id, transaction: Transaction);
-            return MapContribToEntity(contrib);
+            return (contrib == null ? null : MapContribToEntity(contrib))!;
         }
 
         public TEntity Add(TEntity entity)
