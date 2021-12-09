@@ -28,9 +28,6 @@ namespace UnitOfWorkExample.Infrastructure.Dapper
         
         public Task SaveChangesAsync(CancellationToken cancellationToken)
         {
-            if (cancellationToken.IsCancellationRequested)
-                return Task.CompletedTask;
-
             try
             {
                 _transaction.Commit();
@@ -50,19 +47,7 @@ namespace UnitOfWorkExample.Infrastructure.Dapper
             return Task.CompletedTask;
         }
 
-        public IWeatherForecastsRepository WeatherForecasts
-        {
-            get
-            {
-                if (_weatherForecastsRepository == null)
-                {
-                    _weatherForecastsRepository = new WeatherForecastsRepository(_connection, _transaction);
-                    return _weatherForecastsRepository;
-                }
-
-                return _weatherForecastsRepository;
-            }
-        }
+        public IWeatherForecastsRepository WeatherForecasts => _weatherForecastsRepository;
 
         public void Dispose()
         {
@@ -77,7 +62,7 @@ namespace UnitOfWorkExample.Infrastructure.Dapper
         
         private void ResetRepositories()
         {
-            _weatherForecastsRepository = null;
+            _weatherForecastsRepository = null!;
         }
         
         private void Dispose(bool isDisposing)
@@ -87,17 +72,11 @@ namespace UnitOfWorkExample.Infrastructure.Dapper
 
             if (isDisposing)
             {
-                if (_transaction != null)
-                {
-                    _transaction.Dispose();
-                    _transaction = null;
-                }
+                _transaction.Dispose();
+                _transaction = null!;
 
-                if (_connection != null)
-                {
-                    _connection.Dispose();
-                    _connection = null;
-                }
+                _connection.Dispose();
+                _connection = null!;
             }
 
             _isDisposed = true;

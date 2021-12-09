@@ -17,9 +17,8 @@ namespace UnitOfWorkExample.Domain.Entities
         public WeatherForecast()
         {
         }
-
-        // ReSharper disable once UnusedMember.Local
-        private WeatherForecast(int id) : base(id)
+        
+        public WeatherForecast(int id) : base(id)
         {
         }
 

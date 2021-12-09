@@ -1,46 +1,53 @@
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Dapper;
 using UnitOfWorkExample.Domain.Entities;
 using UnitOfWorkExample.Domain.Repositories;
+using UnitOfWorkExample.Infrastructure.Dapper.Contribs;
 
 namespace UnitOfWorkExample.Infrastructure.Dapper.Repositories
 {
-    internal class WeatherForecastsRepository : IWeatherForecastsRepository
+    internal class WeatherForecastsRepository : Repository<WeatherForecast, WeatherForecastContrib<int>, int>,
+        IWeatherForecastsRepository
     {
-        private readonly IDbConnection _connection;
-        private readonly IDbTransaction _transaction;
-
         public WeatherForecastsRepository(IDbConnection connection, IDbTransaction transaction)
+            : base(connection, transaction)
         {
-            _connection = connection;
-            _transaction = transaction;
-        }
-        
-        public Task<WeatherForecast> GetByIdAsync(int id, CancellationToken cancellationToken)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public WeatherForecast Add(WeatherForecast entity)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void Update(WeatherForecast entity)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void Remove(WeatherForecast entity)
-        {
-            throw new System.NotImplementedException();
         }
 
         public async Task<List<WeatherForecast>> GetForecastsAsync(CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            var cmd = new CommandDefinition("select * from WeatherForecasts",
+                transaction: Transaction,
+                cancellationToken: cancellationToken);
+
+            var forecasts = await Connection.QueryAsync<WeatherForecastContrib<int>>(cmd);
+
+            return forecasts
+                .Select(MapContribToEntity)
+                .ToList();
+        }
+
+        protected override WeatherForecastContrib<int> MapEntityToContrib(WeatherForecast entity)
+        {
+            return new WeatherForecastContrib<int>
+            {
+                Id = entity.Id,
+                Date = entity.Date,
+                Summary = entity.Summary.Text,
+                TemperatureC = entity.TemperatureC
+            };
+        }
+
+        protected override WeatherForecast MapContribToEntity(WeatherForecastContrib<int> contrib)
+        {
+            return new WeatherForecast(contrib.Id)
+                .SetDate(contrib.Date)
+                .SetSummary(contrib.Summary)
+                .SetCelciusTemperature(contrib.TemperatureC);
         }
     }
 }
