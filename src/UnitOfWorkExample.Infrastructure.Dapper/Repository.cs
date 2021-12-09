@@ -10,11 +10,13 @@ namespace UnitOfWorkExample.Infrastructure.Dapper
 {
     internal abstract class Repository<TEntity, TContrib, TId> : IRepository<TEntity, TId>
         where TEntity : EntityBase<TId>
-        where TContrib : ContribBase<TId>
+        where TContrib : class
         where TId : IComparable<TId>
     {
         protected readonly IDbConnection Connection;
         protected readonly IDbTransaction Transaction;
+
+        protected static readonly string TableName = ReflectionHelper.GetTableName<TContrib>();
 
         protected Repository(IDbConnection connection, IDbTransaction transaction)
         {
@@ -33,7 +35,8 @@ namespace UnitOfWorkExample.Infrastructure.Dapper
         {
             var contrib = MapEntityToContrib(entity);
             Connection.Insert(contrib, transaction: Transaction);
-            contrib.Id = Connection.ExecuteScalar<TId>("select LAST_INSERT_ID()", transaction: Transaction);
+            var id = Connection.ExecuteScalar<TId>("select LAST_INSERT_ID()", transaction: Transaction);
+            SetContribId(contrib, id);
             return MapContribToEntity(contrib);
         }
 
@@ -50,6 +53,9 @@ namespace UnitOfWorkExample.Infrastructure.Dapper
         }
 
         protected abstract TContrib MapEntityToContrib(TEntity entity);
+        
         protected abstract TEntity MapContribToEntity(TContrib contrib);
+
+        protected abstract void SetContribId(TContrib contrib, TId id);
     }
 }

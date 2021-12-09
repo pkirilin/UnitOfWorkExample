@@ -1,9 +1,14 @@
 using System;
+using Dapper.Contrib.Extensions;
 
 namespace UnitOfWorkExample.Infrastructure.Dapper.Contribs
 {
-    public class WeatherForecastContrib<TId> : ContribBase<TId>
+    [Table("WeatherForecasts")]
+    public class WeatherForecastContrib
     {
+        [Key]
+        public int Id { get; set; }
+
         public DateTime Date { get; set; }
 
         public int TemperatureC { get; set; }
