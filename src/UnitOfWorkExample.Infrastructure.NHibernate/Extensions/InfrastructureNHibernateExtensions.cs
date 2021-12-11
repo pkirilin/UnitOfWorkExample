@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NHibernate;
 using NHibernate.Driver.MySqlConnector;
+using UnitOfWorkExample.Domain.Abstractions;
 
 namespace UnitOfWorkExample.Infrastructure.NHibernate.Extensions
 {
@@ -13,6 +14,7 @@ namespace UnitOfWorkExample.Infrastructure.NHibernate.Extensions
         public static void AddInfrastructureNHibernate(this IServiceCollection services)
         {
             services.AddSessionFactory();
+            services.AddScoped<IAppUnitOfWork, AppUnitOfWork>();
         }
 
         private static void AddSessionFactory(this IServiceCollection services)
