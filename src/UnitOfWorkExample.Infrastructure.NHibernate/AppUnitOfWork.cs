@@ -11,7 +11,7 @@ namespace UnitOfWorkExample.Infrastructure.NHibernate
     public class AppUnitOfWork : IAppUnitOfWork, IDisposable
     {
         private readonly ISession _session;
-        private readonly ITransaction _transaction;
+        private ITransaction _transaction;
 
         public AppUnitOfWork(ISessionFactory sessionFactory)
         {
@@ -20,11 +20,25 @@ namespace UnitOfWorkExample.Infrastructure.NHibernate
             WeatherForecasts = new WeatherForecastsRepository(_session);
         }
         
-        public IWeatherForecastsRepository WeatherForecasts { get; }
+        public IWeatherForecastsRepository WeatherForecasts { get; private set; }
         
-        public Task SaveChangesAsync(CancellationToken cancellationToken)
+        public async Task SaveChangesAsync(CancellationToken cancellationToken)
         {
-            return _transaction.CommitAsync(cancellationToken);
+            try
+            {
+                await _transaction.CommitAsync(cancellationToken);
+            }
+            catch
+            {
+                await _transaction.RollbackAsync(cancellationToken);
+                throw;
+            }
+            finally
+            {
+                _transaction.Dispose();
+                _transaction = _session.BeginTransaction();
+                WeatherForecasts = new WeatherForecastsRepository(_session);
+            }
         }
 
         public void Dispose()
