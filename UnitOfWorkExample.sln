@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitOfWorkExample.Migrator.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitOfWorkExample.Migrator", "src\UnitOfWorkExample.Migrator\UnitOfWorkExample.Migrator.csproj", "{38E1342B-02CA-4894-98B7-C370C8FB9099}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitOfWorkExample.Infrastructure.NHibernate", "src\UnitOfWorkExample.Infrastructure.NHibernate\UnitOfWorkExample.Infrastructure.NHibernate.csproj", "{F9BE6569-106E-4D41-B1EE-704821BADB2F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,6 +50,10 @@ Global
 		{38E1342B-02CA-4894-98B7-C370C8FB9099}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{38E1342B-02CA-4894-98B7-C370C8FB9099}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{38E1342B-02CA-4894-98B7-C370C8FB9099}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9BE6569-106E-4D41-B1EE-704821BADB2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9BE6569-106E-4D41-B1EE-704821BADB2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9BE6569-106E-4D41-B1EE-704821BADB2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9BE6569-106E-4D41-B1EE-704821BADB2F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
