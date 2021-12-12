@@ -17,27 +17,34 @@ namespace UnitOfWorkExample.Infrastructure.NHibernate
             Session = session;
         }
         
-        public Task<TDomainEntity> GetByIdAsync(TId id, CancellationToken cancellationToken)
+        public async Task<TDomainEntity> GetByIdAsync(TId id, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var entity = await Session.GetAsync<TPersistentEntity>(id, cancellationToken);
+            return MapToDomainEntity(entity);
         }
 
         public TDomainEntity Add(TDomainEntity entity)
         {
-            throw new NotImplementedException();
+            var persistentEntity = MapToPersistentEntity(entity);
+            var id = (TId)Session.Save(persistentEntity);
+            SetPersistentEntityId(persistentEntity, id);
+            return MapToDomainEntity(persistentEntity);
         }
 
         public void Update(TDomainEntity entity)
         {
-            throw new NotImplementedException();
+            var persistentEntity = MapToPersistentEntity(entity);
+            Session.Merge(persistentEntity);
         }
 
         public void Remove(TDomainEntity entity)
         {
-            throw new NotImplementedException();
+            var persistentEntity = Session.Get<TPersistentEntity>(entity.Id);
+            Session.Delete(persistentEntity);
         }
         
         protected abstract TDomainEntity MapToDomainEntity(TPersistentEntity entity);
         protected abstract TPersistentEntity MapToPersistentEntity(TDomainEntity entity);
+        protected abstract void SetPersistentEntityId(TPersistentEntity entity, TId id);
     }
 }

@@ -46,5 +46,10 @@ namespace UnitOfWorkExample.Infrastructure.NHibernate.Repositories
                 Summary = entity.Summary.Text
             };
         }
+
+        protected override void SetPersistentEntityId(WeatherForecastPersistentEntity entity, int id)
+        {
+            entity.Id = id;
+        }
     }
 }
