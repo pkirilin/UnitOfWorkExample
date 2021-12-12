@@ -6,35 +6,38 @@ using UnitOfWorkExample.Domain.Abstractions;
 
 namespace UnitOfWorkExample.Infrastructure.NHibernate
 {
-    public class Repository<TEntity, TId> : IRepository<TEntity, TId>
-        where TEntity : EntityBase<TId>
+    public abstract class Repository<TDomainEntity, TPersistentEntity, TId> : IRepository<TDomainEntity, TId>
+        where TDomainEntity : EntityBase<TId>
         where TId : IComparable<TId>
     {
         protected readonly ISession Session;
 
-        public Repository(ISession session)
+        protected Repository(ISession session)
         {
             Session = session;
         }
         
-        public Task<TEntity> GetByIdAsync(TId id, CancellationToken cancellationToken)
+        public Task<TDomainEntity> GetByIdAsync(TId id, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public TEntity Add(TEntity entity)
+        public TDomainEntity Add(TDomainEntity entity)
         {
             throw new NotImplementedException();
         }
 
-        public void Update(TEntity entity)
+        public void Update(TDomainEntity entity)
         {
             throw new NotImplementedException();
         }
 
-        public void Remove(TEntity entity)
+        public void Remove(TDomainEntity entity)
         {
             throw new NotImplementedException();
         }
+        
+        protected abstract TDomainEntity MapToDomainEntity(TPersistentEntity entity);
+        protected abstract TPersistentEntity MapToPersistentEntity(TDomainEntity entity);
     }
 }

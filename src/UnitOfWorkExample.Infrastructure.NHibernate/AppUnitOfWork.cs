@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using NHibernate;
 using UnitOfWorkExample.Domain.Abstractions;
-using UnitOfWorkExample.Domain.Entities;
 using UnitOfWorkExample.Domain.Repositories;
 using UnitOfWorkExample.Infrastructure.NHibernate.Repositories;
 
@@ -18,7 +17,7 @@ namespace UnitOfWorkExample.Infrastructure.NHibernate
         {
             _session = sessionFactory.OpenSession();
             _transaction = _session.BeginTransaction();
-            WeatherForecasts = new WeatherForecastsRepository<WeatherForecast, int>(_session);
+            WeatherForecasts = new WeatherForecastsRepository(_session);
         }
         
         public IWeatherForecastsRepository WeatherForecasts { get; }

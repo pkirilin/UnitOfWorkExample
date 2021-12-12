@@ -1,45 +1,50 @@
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using NHibernate;
-using UnitOfWorkExample.Domain.Abstractions;
+using NHibernate.Linq;
 using UnitOfWorkExample.Domain.Entities;
 using UnitOfWorkExample.Domain.Repositories;
+using UnitOfWorkExample.Infrastructure.NHibernate.Entities;
 
 namespace UnitOfWorkExample.Infrastructure.NHibernate.Repositories
 {
-    public class WeatherForecastsRepository<TEntity, TId> : Repository<TEntity, TId>, IWeatherForecastsRepository
-        where TEntity : EntityBase<TId>
-        where TId : IComparable<TId>
+    internal class WeatherForecastsRepository :
+        Repository<WeatherForecast, WeatherForecastPersistentEntity, int>,
+        IWeatherForecastsRepository
     {
         public WeatherForecastsRepository(ISession session) : base(session)
         {
         }
         
-        public Task<WeatherForecast> GetByIdAsync(int id, CancellationToken cancellationToken)
+        public async Task<List<WeatherForecast>> GetForecastsAsync(CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var forecasts = await Session
+                .Query<WeatherForecastPersistentEntity>()
+                .OrderByDescending(wf => wf.Date)
+                .ToListAsync(cancellationToken);
+            
+            return forecasts.Select(MapToDomainEntity).ToList();
         }
 
-        public WeatherForecast Add(WeatherForecast entity)
+        protected override WeatherForecast MapToDomainEntity(WeatherForecastPersistentEntity entity)
         {
-            throw new NotImplementedException();
+            return new WeatherForecast(entity.Id)
+                .SetDate(entity.Date)
+                .SetCelciusTemperature(entity.TemperatureC)
+                .SetSummary(entity.Summary);
         }
 
-        public void Update(WeatherForecast entity)
+        protected override WeatherForecastPersistentEntity MapToPersistentEntity(WeatherForecast entity)
         {
-            throw new NotImplementedException();
-        }
-
-        public void Remove(WeatherForecast entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<WeatherForecast>> GetForecastsAsync(CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
+            return new WeatherForecastPersistentEntity
+            {
+                Id = entity.Id,
+                Date = entity.Date,
+                TemperatureC = entity.TemperatureC,
+                Summary = entity.Summary.Text
+            };
         }
     }
 }
