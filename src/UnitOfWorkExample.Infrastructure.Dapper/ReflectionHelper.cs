@@ -6,21 +6,25 @@ namespace UnitOfWorkExample.Infrastructure.Dapper
 {
     internal static class ReflectionHelper
     {
-        public static string GetTableName<TContrib>()
+        public static string GetTableName<TPersistentEntity>()
         {
-            var contribType = typeof(TContrib);
+            var persistentEntityType = typeof(TPersistentEntity);
             var tableAttributeType = typeof(TableAttribute);
-            var tableAttribute = contribType.CustomAttributes
+            var tableAttribute = persistentEntityType.CustomAttributes
                 .FirstOrDefault(a => a.AttributeType == tableAttributeType);
 
             if (tableAttribute == null)
             {
-                throw new InvalidOperationException($"Could not find attribute '{tableAttributeType.FullName}' " +
-                                                    $"with table name for contrib type '{contribType.FullName}'. " +
-                                                    $"Table attribute is required for all contrib types");
+                throw new InvalidOperationException(
+                    $"Could not find attribute '{tableAttributeType.FullName}' " +
+                    $"with table name for entity type '{persistentEntityType.FullName}'. " +
+                    "Table attribute is required for all entity types");
             }
 
-            return tableAttribute.ConstructorArguments.First().Value.ToString();
+            return tableAttribute.ConstructorArguments
+                .First()
+                .Value
+                .ToString();
         }
     }
 }

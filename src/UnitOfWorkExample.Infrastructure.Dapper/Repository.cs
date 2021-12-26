@@ -8,15 +8,15 @@ using UnitOfWorkExample.Domain.Abstractions;
 
 namespace UnitOfWorkExample.Infrastructure.Dapper
 {
-    internal abstract class Repository<TEntity, TContrib, TId> : IRepository<TEntity, TId>
-        where TEntity : EntityBase<TId>
-        where TContrib : class
+    internal abstract class Repository<TDomainEntity, TPersistentEntity, TId> : IRepository<TDomainEntity, TId>
+        where TDomainEntity : EntityBase<TId>
+        where TPersistentEntity : class
         where TId : IComparable<TId>
     {
         protected readonly IDbConnection Connection;
         protected readonly IDbTransaction Transaction;
 
-        protected static readonly string TableName = ReflectionHelper.GetTableName<TContrib>();
+        protected static readonly string TableName = ReflectionHelper.GetTableName<TPersistentEntity>();
 
         protected Repository(IDbConnection connection, IDbTransaction transaction)
         {
@@ -24,38 +24,37 @@ namespace UnitOfWorkExample.Infrastructure.Dapper
             Transaction = transaction;
         }
         
-        public async Task<TEntity> GetByIdAsync(TId id, CancellationToken cancellationToken)
+        public async Task<TDomainEntity> GetByIdAsync(TId id, CancellationToken cancellationToken)
         {
-            cancellationToken.ThrowIfCancellationRequested();
-            var contrib = await Connection.GetAsync<TContrib>(id, transaction: Transaction);
-            return (contrib == null ? null : MapContribToEntity(contrib))!;
+            var persistentEntity = await Connection.GetAsync<TPersistentEntity>(id, transaction: Transaction);
+            return (persistentEntity == null ? null : MapToDomainEntity(persistentEntity))!;
         }
 
-        public TEntity Add(TEntity entity)
+        public TDomainEntity Add(TDomainEntity entity)
         {
-            var contrib = MapEntityToContrib(entity);
-            Connection.Insert(contrib, transaction: Transaction);
+            var persistentEntity = MapToPersistentEntity(entity);
+            Connection.Insert(persistentEntity, transaction: Transaction);
             var id = Connection.ExecuteScalar<TId>("select LAST_INSERT_ID()", transaction: Transaction);
-            SetContribId(contrib, id);
-            return MapContribToEntity(contrib);
+            SetPersistentEntityId(persistentEntity, id);
+            return MapToDomainEntity(persistentEntity);
         }
 
-        public void Update(TEntity entity)
+        public void Update(TDomainEntity entity)
         {
-            var contrib = MapEntityToContrib(entity);
-            Connection.Update(contrib, transaction: Transaction);
+            var persistentEntity = MapToPersistentEntity(entity);
+            Connection.Update(persistentEntity, transaction: Transaction);
         }
 
-        public void Remove(TEntity entity)
+        public void Remove(TDomainEntity entity)
         {
-            var contrib = MapEntityToContrib(entity);
-            Connection.Delete(contrib, transaction: Transaction);
+            var persistentEntity = MapToPersistentEntity(entity);
+            Connection.Delete(persistentEntity, transaction: Transaction);
         }
 
-        protected abstract TContrib MapEntityToContrib(TEntity entity);
+        protected abstract TPersistentEntity MapToPersistentEntity(TDomainEntity entity);
         
-        protected abstract TEntity MapContribToEntity(TContrib contrib);
+        protected abstract TDomainEntity MapToDomainEntity(TPersistentEntity entity);
 
-        protected abstract void SetContribId(TContrib contrib, TId id);
+        protected abstract void SetPersistentEntityId(TPersistentEntity entity, TId id);
     }
 }

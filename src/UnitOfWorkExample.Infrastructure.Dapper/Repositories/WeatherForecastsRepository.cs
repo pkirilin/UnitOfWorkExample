@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 using Dapper;
 using UnitOfWorkExample.Domain.Entities;
 using UnitOfWorkExample.Domain.Repositories;
-using UnitOfWorkExample.Infrastructure.Dapper.Contribs;
+using UnitOfWorkExample.Infrastructure.Dapper.Entities;
 
 namespace UnitOfWorkExample.Infrastructure.Dapper.Repositories
 {
-    internal class WeatherForecastsRepository : Repository<WeatherForecast, WeatherForecastContrib, int>,
+    internal class WeatherForecastsRepository : Repository<WeatherForecast, WeatherForecastPersistentEntity, int>,
         IWeatherForecastsRepository
     {
         public WeatherForecastsRepository(IDbConnection connection, IDbTransaction transaction)
@@ -24,16 +24,16 @@ namespace UnitOfWorkExample.Infrastructure.Dapper.Repositories
                 transaction: Transaction,
                 cancellationToken: cancellationToken);
 
-            var forecasts = await Connection.QueryAsync<WeatherForecastContrib>(cmd);
+            var forecasts = await Connection.QueryAsync<WeatherForecastPersistentEntity>(cmd);
 
             return forecasts
-                .Select(MapContribToEntity)
+                .Select(MapToDomainEntity)
                 .ToList();
         }
 
-        protected override WeatherForecastContrib MapEntityToContrib(WeatherForecast entity)
+        protected override WeatherForecastPersistentEntity MapToPersistentEntity(WeatherForecast entity)
         {
-            return new WeatherForecastContrib
+            return new WeatherForecastPersistentEntity
             {
                 Id = entity.Id,
                 Date = entity.Date,
@@ -42,17 +42,17 @@ namespace UnitOfWorkExample.Infrastructure.Dapper.Repositories
             };
         }
 
-        protected override WeatherForecast MapContribToEntity(WeatherForecastContrib contrib)
+        protected override WeatherForecast MapToDomainEntity(WeatherForecastPersistentEntity entity)
         {
-            return new WeatherForecast(contrib.Id)
-                .SetDate(contrib.Date)
-                .SetSummary(contrib.Summary)
-                .SetCelciusTemperature(contrib.TemperatureC);
+            return new WeatherForecast(entity.Id)
+                .SetDate(entity.Date)
+                .SetSummary(entity.Summary)
+                .SetCelciusTemperature(entity.TemperatureC);
         }
 
-        protected override void SetContribId(WeatherForecastContrib contrib, int id)
+        protected override void SetPersistentEntityId(WeatherForecastPersistentEntity entity, int id)
         {
-            contrib.Id = id;
+            entity.Id = id;
         }
     }
 }
